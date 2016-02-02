@@ -61,7 +61,11 @@ public class Hangman {
 			String word = selectRandomWord();
 			int score = playGame(word, 0);
 			handleHighScores(score);
-			break;
+			System.out.println("Would you like to play again?");
+			String ans = input.nextLine();
+			if(!ans.equals("Y") && !ans.equals("y") && !ans.equals("yes") && !ans.equals("Yes") && !ans.equals("YES")){
+				break;
+			}
 		}
 		dicReader.close();
 		hsReader.close();
@@ -112,17 +116,18 @@ public class Hangman {
 				if(c == guess){
 					correctGuess = true;
 					correct ++;
+					score += 10;
 				}
 			}
 			if(correctGuess){
 				correctLetters.add(guess);
-				score += 10;
 			}else{
 				incorrectLetters.add(guess);
 				guesses --;
 			}
 			if(correct == wordLength){
 				gameOver = true;
+				score += (guesses * 30);
 			}
 
 			if(guesses == 0){
