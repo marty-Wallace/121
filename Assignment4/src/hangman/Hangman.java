@@ -21,7 +21,7 @@ public class Hangman {
 	private ArrayList<String> dictionary;
 	
 	/**
-	 * Private constructor. This program is self-contained. Initialize File Readers and handle any file exceptions
+	 * Private constructor. This program is self-contained. Initializes dictionary file Reader and handle any file exceptions
 	 */
 	private Hangman(){
 		this.dictionaryFile = new File(dicFileName);
@@ -31,12 +31,6 @@ public class Hangman {
 		}catch(FileNotFoundException e){
 			System.out.println("Dictionary could not be found in path " + dicFileName);
 			System.exit(1);
-		}
-		try{
-			this.hsReader = new Scanner(highScoreFile);		
-		}catch(FileNotFoundException e){
-			System.out.println("HighScore file could not be found in path: " + highScoreFileName);
-			System.exit(2);
 		}
 		this.input = new Scanner(System.in);
 	}
@@ -52,15 +46,15 @@ public class Hangman {
 
 
 	/**
-	 * Main program loop. Loads words into dictionary then selects a random word and starts a game. After game completion the user is prompted to play again. 
+	 * Main program loop. Loads words into dictionary then selects a random word and starts a game. 
+	 * After game completion the user is prompted to play again. 
 	 */
 	private void execute(){
 		boolean running = true;
 		loadWordsIntoDictionary();
 		while(running){
 			String word = selectRandomWord();
-			int score = playGame(word, 0);
-			handleHighScores(score);
+			handleHighScores(playGame(word, 0));
 			System.out.println("Would you like to play again?");
 			String ans = input.nextLine();
 			if(!ans.equals("Y") && !ans.equals("y") && !ans.equals("yes") && !ans.equals("Yes") && !ans.equals("YES")){
@@ -146,7 +140,7 @@ public class Hangman {
 			System.out.println("You won!");
 			System.out.println("The word was: " + word.toUpperCase());
 			System.out.println("Your current score is: " + score + "\nYou get to play again!");
-			return playGame(selectRandomWord(), score);
+			return playGame(selectRandomWord(), score); // calling this method again using new word and curent score 
 		}
 	}
 
@@ -196,6 +190,12 @@ public class Hangman {
 	private void handleHighScores(int score){
 		ArrayList<Score> highScoreList = new ArrayList<Score>();
 		
+		try{
+			this.hsReader = new Scanner(highScoreFile);		
+		}catch(FileNotFoundException e){
+			System.out.println("HighScore file could not be found in path: " + highScoreFileName);
+			System.exit(2);
+		}
 		while(hsReader.hasNext()){
 			String hs = hsReader.nextLine();
 			highScoreList.add(new Score(hs.split("-")[0], Integer.parseInt(hs.split("-")[1])));
@@ -213,6 +213,7 @@ public class Hangman {
 				break;
 			}
 		}
+		hsReader.close();
 		PrintWriter pw = null;
 		try {
 			pw = new PrintWriter(highScoreFile);
@@ -274,7 +275,13 @@ public class Hangman {
 
 		@Override
 		public int compareTo(Score s) {
-			return s.value - this.value;
+			if(s.value > this.value){
+				return 1;
+			}else if(s.value == this.value){
+				return 0;
+			}else{
+				return -1;
+			}
 		}
 	}
 }
