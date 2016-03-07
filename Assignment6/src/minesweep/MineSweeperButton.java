@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class MineSweeperButton extends JButton implements MouseListener{
+	
 
 	// Array of paths to the Icons 
 	public static String[] ICON_PATHS = {"res/0.png","res/1.png","res/2.png","res/3.png","res/4.png","res/5.png",
@@ -24,21 +25,40 @@ public class MineSweeperButton extends JButton implements MouseListener{
 	private int NUM; // the number of surrounding mines 
 	boolean IS_A_MINE; // true if buttons is a mine 
 	private int state; // integer representing the current state of the button 
-	
+	private MineSweeper game; // the board and frame 
+	public int i, j;
 
 	/**
 	 * Constructor for MineSweeperButton 
 	 * @param NUM - The number of neighbor mines to this button  
 	 * @param IS_A_MINE - represents if this is a mine or not 
 	 */
-	public MineSweeperButton(int NUM, boolean IS_A_MINE) {
-		this.NUM = NUM;
-		this.IS_A_MINE = IS_A_MINE;
+	public MineSweeperButton(MineSweeper game, int i, int j) {
+		this.NUM = -1;
 		this.neighbors = new ArrayList<MineSweeperButton>();
 		setState(COVER);
 		this.addMouseListener(this);
 		this.setBorder(BorderFactory.createEmptyBorder());
+		this.game = game;
+		this.i = i;
+		this.j = j;
 	}
+	
+	/**
+	 * Set the number of mines This button has a neighbor
+	 * @param NUM - The number of mines 
+	 */
+	public void setNum(int NUM){
+		this.NUM = NUM;
+	}
+	
+	/**
+	 * Sets this button to be a mine
+	 */
+	public void IS_A_MINE(){
+		this.IS_A_MINE = true;
+	}
+	
 
 	/**
 	 * Add Neighboring button to list of neighbors 
@@ -72,6 +92,10 @@ public class MineSweeperButton extends JButton implements MouseListener{
 	public void mousePressed(MouseEvent e) {
 		
 		if(MineSweeper.gameOver){
+			return;
+		}
+		if(game.isFirstClick()){
+			game.generateMap(this ,e);
 			return;
 		}
 		/////////Left click toggles between flag and cover //////
@@ -120,15 +144,13 @@ public class MineSweeperButton extends JButton implements MouseListener{
 	public int getNum(){
 		return this.NUM;
 	}
+	
+	public ArrayList<MineSweeperButton>getNeighbors(){
+		return this.neighbors;
+	}
 
 	
-	/**
-	 * Set the number of mines This button has a neighbor
-	 * @param num - The number of mines 
-	 */
-	public void setNum(int num) {
-		this.NUM = num;
-	}
+
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {

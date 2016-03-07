@@ -28,9 +28,11 @@ public class MineSweeper {
 	private final static int  BEGINNER = 0, INTERMEDIATE = 1, EXPERT = 2; // index of each of the difficulties available
 	private final static int ROW = 0, COL = 1, MINES = 2;  // indexes of the information in the VALUES array
 	private final static int [][] VALUES = {{8, 8, 10}, {16, 16, 40}, {16, 32, 99}}; // rows, cols, and mines for each difficulty
-	
-	private final static int DEFAULT = 1; // change this to change the default starting difficutly
-	
+
+	private final static int DEFAULT = 1; // change this to change the default starting difficulty
+
+	private static Random ran = new Random(); // random object for map generation
+
 	private int difficulty;
 	public static boolean gameOver;
 	private boolean newGame; //flag for if the player has requested a new game, runs a continue in the game loop
@@ -43,8 +45,10 @@ public class MineSweeper {
 	private JMenuItem newBeginner, newIntermediate, newExpert, exit;
 	private MineSweeperButton[][] grid; 
 	private int[][] map;
-	private int totalMines;
-	
+	private int totalMines, timeCounter;
+	private HighScoreIO scoreManager = new HighScoreIO();
+
+
 	/**
 	 * Main Method to start up program 
 	 */
@@ -52,7 +56,7 @@ public class MineSweeper {
 		MineSweeper assignment6 = new MineSweeper();
 		assignment6.execute();
 	}
-	
+
 	/**
 	 * Main Game loop that runs until Program finishes. 
 	 * Initializes frame then adds the menu and components. 
@@ -67,14 +71,15 @@ public class MineSweeper {
 			gameOver = false;
 			this.newGame = false;
 			this.firstClick = true;
-			setMap();
+			createMap();
+			addNeighbors();
 			setTopButtons();
 			frame.pack();
 			frame.validate();
 			frame.repaint();
 			long startTime = System.currentTimeMillis();
-			int timeCounter = 0;
-			timer.setText("0");
+			timeCounter = 0;
+			timer.setText(String.valueOf(timeCounter));
 			while(!update()){ 
 				// game running while update returns false
 				if(System.currentTimeMillis() - startTime > 1000 && !firstClick && !gameOver){
@@ -82,11 +87,12 @@ public class MineSweeper {
 					timer.setText(String.valueOf(timeCounter));
 					startTime = System.currentTimeMillis();
 				}
-			}
+			} 
+			// game is over and new game has been requested 
 			clearComponents();
 		}
 	}
-	
+
 	/**
 	 * Clears components from frame and invalidates 
 	 */
@@ -94,14 +100,13 @@ public class MineSweeper {
 		frame.getContentPane().removeAll();
 		frame.invalidate();
 	}
-	
+
 	/**
 	 * Parses over game board and checks for game-over conditions. 
 	 * @return
 	 * False if game is over. Else True
 	 */
 	public boolean update(){
-		
 		boolean mineClicked = false;
 		int flagCount = 0, minesFlagged = 0, uncoveredCount = 0;
 		for(int i = 0; i < VALUES[difficulty][ROW]; i++) {
@@ -121,58 +126,55 @@ public class MineSweeper {
 				}
 			}
 		}
-		
+
 		if(uncoveredCount > 0){
 			firstClick = false;
 		}
-		
+
 		/////////////////Handling Face-Icon for Game-over////////////////////////////
 		if(mineClicked){
 			gameOver = true;
 			face.setIcon(new ImageIcon(MineSweeperButton.ICON_PATHS[MineSweeperButton.FACE_DEAD]));
 			showGameLostScreen();
-		}else if(minesFlagged == VALUES[difficulty][MINES]){
-			gameOver = true;
-			face.setIcon(new ImageIcon(MineSweeperButton.ICON_PATHS[MineSweeperButton.FACE_WIN]));
-			JOptionPane.showMessageDialog(null, "Congratulations you won!");
 		}else if(uncoveredCount == VALUES[difficulty][ROW] * VALUES[difficulty][COL] - VALUES[difficulty][MINES]) {
 			gameOver = true;
 			face.setIcon(new ImageIcon(MineSweeperButton.ICON_PATHS[MineSweeperButton.FACE_WIN]));
+			if(scoreManager.isHighScore(difficulty, timeCounter)){
+				
+			}
 			JOptionPane.showMessageDialog(null, "Congratulations you won!");
 		}
-		
+
 		mines.setText(String.valueOf(Math.max((VALUES[difficulty][MINES] - flagCount), 0)));
-		
-		try {Thread.sleep(20);} catch (InterruptedException e) {}
-		
+
+		try {Thread.sleep(20);} catch (InterruptedException e) { }
+
 		return gameOver && newGame;
 	}
-	
-	
+
+
 	/**
 	 * Initializes frame sets title/visible/default close operation
 	 */
 	public void initializeFrame(){
 		frame = new JFrame();
 		frame.setTitle("MineSweeper");
-		frame.setResizable(true);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		//scoreManager.readHighScores();
 	}
 
-	
+
 	/**
-	 * Initializes the Buttons for the minesweeper grid and sets them to be mines or numbers 
+	 * Sets the buttons to be mines or numbers 
 	 */
 	public void setMap() {
-		generateMap();
-		all = new JPanel(new BorderLayout());
-		center = new JPanel(new GridLayout(VALUES[difficulty][ROW],VALUES[difficulty][COL]));
-		grid = new MineSweeperButton[VALUES[difficulty][ROW]][VALUES[difficulty][COL]];
 
 		for(int i = 0; i < VALUES[difficulty][ROW]; i++) {
 			for(int j = 0; j < VALUES[difficulty][COL]; j++) {
 				int num = 0;
+
 				boolean north = true, east = true, south = true, west = true; 
 				/////flags to avoid going out of bounds /////////////
 				if(i == 0){ north = false; }
@@ -190,15 +192,19 @@ public class MineSweeper {
 				if(south && east && map[i+1][j+1] == 1){ num++; }
 				if(south && west && map[i+1][j-1] == 1){ num++; }
 				//////check if square is a bomb///////////////
-				if(map[i][j] == 0){
-					grid[i][j] = new MineSweeperButton(num, false);
-					center.add(grid[i][j]);
-				}else{
-					grid[i][j] = new MineSweeperButton(num, true);
-					center.add(grid[i][j]);
+				grid[i][j].setNum(num);
+				if(map[i][j] == 1){
+					grid[i][j].IS_A_MINE();
 				}
+
 			}
 		}
+	}
+
+	/**
+	 * Adds the neighbors of each button to its list of neighbors
+	 */
+	public void addNeighbors(){
 		/////////////adding neighbor buttons to each button///////////
 		for(int i = 0; i < VALUES[difficulty][ROW]; i++) {
 			for(int j = 0; j < VALUES[difficulty][COL]; j++) {
@@ -217,15 +223,11 @@ public class MineSweeper {
 				if(north && west) { grid[i][j].addNeighbor(grid[i-1][j-1]); }
 				if(south && east) { grid[i][j].addNeighbor(grid[i+1][j+1]); }
 				if(south && west) { grid[i][j].addNeighbor(grid[i+1][j-1]); }
-				
 			}
 		}
-		
-		all.add(center, BorderLayout.CENTER);  // finaly add everything to the frame 
-		frame.add(all);
-
 	}
-	
+
+
 	/**
 	 * Sets the face, timer and mines left buttons 
 	 */
@@ -234,7 +236,7 @@ public class MineSweeper {
 		mines = new JButton(String.valueOf(totalMines));
 		timer = new JButton("0");
 		face = new JButton();
-		
+
 		face.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
@@ -250,21 +252,43 @@ public class MineSweeper {
 		all.add(top, BorderLayout.NORTH);
 	}
 
+	public void createMap(){
+		all = new JPanel(new BorderLayout());
+		center = new JPanel(new GridLayout(VALUES[difficulty][ROW],VALUES[difficulty][COL]));
+		grid = new MineSweeperButton[VALUES[difficulty][ROW]][VALUES[difficulty][COL]];
+		map = new int[VALUES[difficulty][ROW]] [VALUES[difficulty][COL]];
+		for(int i = 0; i < VALUES[difficulty][ROW]; i++) {
+			for(int j = 0; j < VALUES[difficulty][COL]; j++) {
+				grid[i][j] = new MineSweeperButton(this, i ,j);
+				center.add(grid[i][j]);
+			}
+		}
+
+
+		all.add(center, BorderLayout.CENTER);  // finally add everything to the frame 
+		frame.add(all);
+	}
+
 	/**
 	 * Generates a random map based on the current difficulty 
 	 */
-	public void generateMap() {
+	public void generateMap(MineSweeperButton first, MouseEvent e) {
+		this.firstClick = false;
 		map = new int[VALUES[difficulty][ROW]] [VALUES[difficulty][COL]];
 		this.totalMines = VALUES[difficulty][MINES];
-		Random ran = new Random();
 		for(int i = 0; i < totalMines; i++) {
 			int row = ran.nextInt(VALUES[difficulty][ROW]);
 			int col = ran.nextInt(VALUES[difficulty][COL]);
-			if(map[row][col] == 1) { i--;  continue; } 
+			if(map[row][col] == 1 || first.equals(grid[row][col]) || first.getNeighbors().contains(grid[row][col])) {
+				i--;  
+				continue; 
+			} 
 			map[row][col] = 1; 
 		}
+		setMap();
+		first.mousePressed(e);
 	}
-	
+
 	/**
 	 * Sets the menu for the frame with a new game option for different difficulties and and exit option 
 	 */
@@ -292,7 +316,7 @@ public class MineSweeper {
 				newGame = true;
 				difficulty = INTERMEDIATE;
 			}
-			
+
 		});
 		newExpert.addActionListener(new ActionListener() {
 			@Override
@@ -308,7 +332,7 @@ public class MineSweeper {
 				System.exit(0);
 			}
 		});
-		
+
 		newGameSubMenu.add(newBeginner);
 		newGameSubMenu.add(newIntermediate);
 		newGameSubMenu.add(newExpert);
@@ -317,7 +341,7 @@ public class MineSweeper {
 		menu.add(fileMenu);
 		frame.setJMenuBar(menu);
 	}
-	
+
 	/**
 	 * Displays all mines that were not flagged or were misflagged after the game is lost 
 	 */
@@ -334,6 +358,12 @@ public class MineSweeper {
 				}
 			}
 		}
-			
+
 	}
+
+	public boolean isFirstClick(){
+		return this.firstClick;
+	}
+
+
 }
