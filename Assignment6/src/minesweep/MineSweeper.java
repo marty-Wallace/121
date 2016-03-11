@@ -41,8 +41,8 @@ public class MineSweeper {
 	private JPanel all, top, center;
 	private JButton face, timer, mines;
 	private JMenuBar menu;
-	private JMenu fileMenu, newGameSubMenu;
-	private JMenuItem newBeginner, newIntermediate, newExpert, exit;
+	private JMenu fileMenu, newGameSubMenu, highScoreSubMenu;
+	private JMenuItem newBeginner, newIntermediate, newExpert, highScoreB, highScoreI, highScoreE, exit;
 	private MineSweeperButton[][] grid; 
 	private int[][] map;
 	private int totalMines, timeCounter;
@@ -140,9 +140,11 @@ public class MineSweeper {
 			gameOver = true;
 			face.setIcon(new ImageIcon(MineSweeperButton.ICON_PATHS[MineSweeperButton.FACE_WIN]));
 			if(scoreManager.isHighScore(difficulty, timeCounter)){
-				
+				String name = JOptionPane.showInputDialog("You got a high score! Enter your name: \n");
+				scoreManager.addScore(difficulty, timeCounter, name);
 			}
-			JOptionPane.showMessageDialog(null, "Congratulations you won!");
+JOptionPane.showMessageDialog(null, "Congratulations!! \nHigh scores: \n" + scoreManager.getDifficultyInfo(difficulty));
+			
 		}
 
 		mines.setText(String.valueOf(Math.max((VALUES[difficulty][MINES] - flagCount), 0)));
@@ -300,7 +302,33 @@ public class MineSweeper {
 		newBeginner = new JMenuItem("Beginner");
 		newIntermediate = new JMenuItem("Intermediate");
 		newExpert = new JMenuItem("Expert");
-
+		highScoreSubMenu = new JMenu("High Scores");
+		
+		highScoreB = new JMenuItem("Beginner");
+		highScoreI = new JMenuItem("Intermediate");
+		highScoreE = new JMenuItem("Expert");
+		
+		highScoreB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "High scores: \n" + scoreManager.getDifficultyInfo(BEGINNER));
+			}
+		});
+		
+		highScoreI.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "High scores: \n" + scoreManager.getDifficultyInfo(INTERMEDIATE));
+			}
+		});
+		
+		highScoreE.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "High scores: \n" + scoreManager.getDifficultyInfo(EXPERT));
+			}
+		});
+		
 		newBeginner.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -332,11 +360,15 @@ public class MineSweeper {
 				System.exit(0);
 			}
 		});
-
+		
+		highScoreSubMenu.add(highScoreB);
+		highScoreSubMenu.add(highScoreI);
+		highScoreSubMenu.add(highScoreE);
 		newGameSubMenu.add(newBeginner);
 		newGameSubMenu.add(newIntermediate);
 		newGameSubMenu.add(newExpert);
 		fileMenu.add(newGameSubMenu);
+		fileMenu.add(highScoreSubMenu);
 		fileMenu.add(exit);
 		menu.add(fileMenu);
 		frame.setJMenuBar(menu);
@@ -359,6 +391,10 @@ public class MineSweeper {
 			}
 		}
 
+	}
+	
+	public void setFace(ImageIcon face) {
+		this.face.setIcon(face);
 	}
 
 	public boolean isFirstClick(){

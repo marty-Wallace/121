@@ -1,15 +1,15 @@
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
-default:500
+Marty::19
+Marty Wallace::22
+Marty::43
+default::500
+default::500
+Martin Wallace::87
+Marty::96
+Martin Wallace::106
+default::500
+default::500
+Marty::398
+default::1000
+default::1000
+default::1000
+default::1000

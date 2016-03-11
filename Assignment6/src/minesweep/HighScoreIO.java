@@ -5,27 +5,42 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+/**
+ * Score manager class for reading, writing and comparing high scores for all of the difficulties of the MineSweeper game
+ *  
+ * @author Martin Wallace 
+ *
+ */
 public class HighScoreIO {
 	
-	public Score[][] scores;
-	private static final String path = "res/highscores.txt";
+	public Score[][] scores; // array of inner class Score. 
+	private static final String path = "res/highscores.txt";  // path to highscore file 
 	
+
 	public HighScoreIO() {
 		this.scores = new Score[3][5];
-		//readHighScores();
+		readHighScores();
 	}
 	
 
+	/**
+	 * Returns a formatted String representing the top 5 highscores for a given difficulty 
+	 * @param difficulty - The difficulty being requested. 0 for Beginner. 1 for Intermediate. 2 for Advanced 
+	 * @return - formatted String to be displayed when high scores requested 
+	 */
 	public String getDifficultyInfo(int difficulty){
 		String ret = "";
 		
 		for(int i = 0; i < scores[difficulty].length; i++){
-			ret += (i+1) + ") " + scores[difficulty][i].name + ": " + scores[difficulty][i].score + "\n";
+			ret += (i+1) + ") " + scores[difficulty][i].name + ": " + scores[difficulty][i].score + " seconds \n";
 		}
 		return ret;
 	}
 	
-	public void readHighScores() {
+	/**
+	 * Reads the highscores off the highscore file and stores then in the Score[] scores
+	 */
+	private void readHighScores() {
 		File file = new File(path);
 		Scanner fScan = null;
 		try {
@@ -39,6 +54,7 @@ public class HighScoreIO {
 				scores[i][j] = new Score(parts[0], Integer.parseInt(parts[1]));
 			}
 		}
+		
 		fScan.close();
 	}
 	
@@ -50,14 +66,22 @@ public class HighScoreIO {
 				temp2 = scores[difficulty][i];
 				scores[difficulty][i] = temp1;
 				temp1 = temp2;
+				continue;
 			}
 			if(time < scores[difficulty][i].score){
 				temp1 = scores[difficulty][i];
 				scores[difficulty][i] = new Score(name, time);
 			}
 		}
+		rewriteFile();
 	}
 	
+	/**
+	 * Check to see if a given score qualifies to make the high score list. 
+	 * @param difficulty - the difficulty that was played when score was attained
+	 * @param time - the score attained 
+	 * @return - boolean value representing if the score was good enough to make the high score list 
+	 */
 	public boolean isHighScore(int difficulty, int time) {
 		for(Score s : scores[difficulty]){
 			if( time < s.score){
@@ -67,6 +91,9 @@ public class HighScoreIO {
 		return false;
 	}
 	
+	/**
+	 * Class to store the high scores 
+	 */
 	class Score{ 
 		
 		String name; 
@@ -82,7 +109,10 @@ public class HighScoreIO {
 		}
 	}
 	
-	public void rewriteFile( ){
+	/**
+	 * Rewrites the data to the file with the new scores in place 
+	 */
+	private void rewriteFile( ){
 		PrintWriter pw = null;
 		File file = new File(path);
 		
@@ -93,12 +123,13 @@ public class HighScoreIO {
 
 		for(int i = 0; i < 3; i++){
 			for(Score s : scores[i]){
-				pw.write(s.toString());
+				pw.write(s.toString()+"\n");
 			}
 		}
 		
 		pw.flush();
 		pw.close();
+		this.readHighScores();
 	}
 
 }

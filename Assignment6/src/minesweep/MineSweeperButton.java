@@ -9,17 +9,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class MineSweeperButton extends JButton implements MouseListener{
-	
+
 
 	// Array of paths to the Icons 
 	public static String[] ICON_PATHS = {"res/0.png","res/1.png","res/2.png","res/3.png","res/4.png","res/5.png",
 			"res/6.png","res/7.png","res/8.png","res/cover.png", "res/face-dead.png", "res/face-smile.png", "res/face-win.png"
-			, "res/flag.png", "res/mine-grey.png", "res/mine-misflagged.png", "res/mine-red.png"};
-	
+			, "res/flag.png", "res/mine-grey.png", "res/mine-misflagged.png", "res/mine-red.png", "res/face-oh.png"};
+
 	// Constants for the possible states of the buttons 
 	public static final int ZERO = 0, ONE = 1, TWO = 2, THREE = 3, FOUR = 4, FIVE = 5, SIX = 6, SEVEN = 7, EIGHT = 8, 
 			COVER = 9, FACE_DEAD = 10, FACE_SMILE = 11, FACE_WIN = 12, FLAG = 13, MINE_GREY = 14, 
-			MINE_MISFLAGGED = 15, MINE_RED = 16;
+			MINE_MISFLAGGED = 15, MINE_RED = 16, FACE_OH = 17;
 
 	private ArrayList<MineSweeperButton>neighbors; // all of the buttons neighbors 
 	private int NUM; // the number of surrounding mines 
@@ -43,7 +43,7 @@ public class MineSweeperButton extends JButton implements MouseListener{
 		this.i = i;
 		this.j = j;
 	}
-	
+
 	/**
 	 * Set the number of mines This button has a neighbor
 	 * @param NUM - The number of mines 
@@ -51,14 +51,14 @@ public class MineSweeperButton extends JButton implements MouseListener{
 	public void setNum(int NUM){
 		this.NUM = NUM;
 	}
-	
+
 	/**
 	 * Sets this button to be a mine
 	 */
 	public void IS_A_MINE(){
 		this.IS_A_MINE = true;
 	}
-	
+
 
 	/**
 	 * Add Neighboring button to list of neighbors 
@@ -90,22 +90,31 @@ public class MineSweeperButton extends JButton implements MouseListener{
 	 *  Handles the mouse pressed event on this button and contains all the logic for click actions in minesweeper
 	 */
 	public void mousePressed(MouseEvent e) {
-		
+
 		if(MineSweeper.gameOver){
 			return;
 		}
-		if(game.isFirstClick()){
+
+			game.setFace(new ImageIcon(ICON_PATHS[FACE_OH]));
+
+
+		// no right clicks before right clicks 
+		if(game.isFirstClick() && e.getButton() == MouseEvent.BUTTON3) {
+			return;
+		}
+
+		if(game.isFirstClick() && e.getButton() == MouseEvent.BUTTON1){
 			game.generateMap(this ,e);
 			return;
 		}
-		/////////Left click toggles between flag and cover //////
+		/////////Right click toggles between flag and cover //////
 		if(e.getButton() == MouseEvent.BUTTON3){
 			if(this.state == COVER){
 				this.state = FLAG;
 			}else if(this.state ==FLAG) {
 				this.state = COVER;
 			}
-			//////////Right clicks ///////////////////
+			//////////Left clicks ///////////////////
 		}else if(e.getButton() == MouseEvent.BUTTON1){
 			if(this.state == COVER){
 
@@ -129,14 +138,14 @@ public class MineSweeperButton extends JButton implements MouseListener{
 				if(flagCount == this.NUM){   // if the right number of neighbors have been flagged 
 					for(MineSweeperButton m : neighbors){
 						if(m.getState() == COVER)  // send action event to unflagged neighbors 
-						m.mousePressed(e);
+							m.mousePressed(e);
 					}
 				}
 			}
 		}
 		setState(state); 
 	}
-	
+
 	/**
 	 * Get the number of neighbors of this button that are mines 
 	 * @return - the number of mines 
@@ -144,29 +153,27 @@ public class MineSweeperButton extends JButton implements MouseListener{
 	public int getNum(){
 		return this.NUM;
 	}
-	
+
 	public ArrayList<MineSweeperButton>getNeighbors(){
 		return this.neighbors;
 	}
 
-	
 
-	
 	@Override
 	public void mouseReleased(MouseEvent e) {
 
+		if(!game.gameOver){
+			game.setFace(new ImageIcon(ICON_PATHS[FACE_SMILE]));
+		}
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-
-	}
+	public void mouseClicked(MouseEvent e) { }
+	
 	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
+	public void mouseEntered(MouseEvent e) { }
+	
 	@Override
-	public void mouseExited(MouseEvent e) {
-
-	}
+	public void mouseExited(MouseEvent e) {	}
+	
 }
