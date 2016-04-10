@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;minesweep.MineSweeperFrame&apos; to &apos;MineSweeper&apos;&#x0D;&#x0A;- Original project: &apos;Assignment6&apos;&#x0D;&#x0A;- Original element: &apos;minesweep.MineSweeperFrame&apos;&#x0D;&#x0A;- Renamed element: &apos;minesweep.MineSweeper&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;MineSweeperFrame&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;minesweep{MineSweeperFrame.java[MineSweeperFrame" matchStrategy="1" name="MineSweeper" qualified="false" references="true" similarDeclarations="false" stamp="1456089535882" textual="false" version="1.0"/>
+</session>

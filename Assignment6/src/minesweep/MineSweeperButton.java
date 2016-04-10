@@ -114,6 +114,7 @@ public class MineSweeperButton extends JButton implements MouseListener{
 			}else if(this.state ==FLAG) {
 				this.state = COVER;
 			}
+			
 			//////////Left clicks ///////////////////
 		}else if(e.getButton() == MouseEvent.BUTTON1){
 			if(this.state == COVER){
@@ -128,7 +129,7 @@ public class MineSweeperButton extends JButton implements MouseListener{
 						}
 					}
 				}
-			}else if(this.state < 8){ // If this button has already been revealed to be a mine
+			}else if(this.state < 8){ // If this button has already been revealed
 				int flagCount = 0; 
 				for(MineSweeperButton m : neighbors){ 
 					if(m.getState() == FLAG){

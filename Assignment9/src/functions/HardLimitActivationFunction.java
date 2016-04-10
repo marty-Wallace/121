@@ -7,15 +7,20 @@ public final class HardLimitActivationFunction extends ActivationFunction{
 		return hardLim(value);
 	}
 
-	@Override
-	public double calcInverse(double value) {
-		return 1-hardLim(value);
-	}
+
 	
 	private double hardLim(double value) {
 		if(value >= 0) {
 			return 1;
 		}
+		return 0;
+	}
+
+
+
+	@Override
+	public double calcPrime(double value) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 

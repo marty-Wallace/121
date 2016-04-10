@@ -216,7 +216,6 @@ public class MosaicGUI {
 		frame.pack();
 		frame.setSize(dim);
 		frame.repaint();
-
 	}
 
 	public JFrame getFrame() {

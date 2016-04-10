@@ -7,16 +7,20 @@ public final class TahnFunction extends ActivationFunction{
 		return tahn(value);
 	}
 
-	@Override
-	public double calcInverse(double value) {
-		double t = tahn(value);
-		return 1.0 - (t * t);
-	}
+
 
 	private double tahn(double value) {
 		double a = Math.exp(value);
 		double b = Math.exp(-value);
 		return (a-b)/(a+b);
+	}
+
+
+
+	@Override
+	public double calcPrime(double value) {
+		double t = tahn(value);
+		return 1.0 - (t * t);
 	}
 
 }

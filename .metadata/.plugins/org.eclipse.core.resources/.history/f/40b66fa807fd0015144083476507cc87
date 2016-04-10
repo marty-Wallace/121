@@ -1,0 +1,31 @@
+package mosaic;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+
+import image.Tile;
+
+public class KenMosaicStarter
+{
+    //main at this point only reads in the tile images into the ArrayList.
+    public static void main(String[]args) throws IOException{
+        System.out.println("Reading tiles...");
+
+    }
+    
+}
+    
+    //This method takes in a directory, which it will read in all the tile images from.
+    //It returns an ArrayList of type Tile, so that it has the file and the average colors for that image.
+
+
+
+//A tile class to handle a single tile, with constructor calculating the average colors of the tile image
+
+
+
+    

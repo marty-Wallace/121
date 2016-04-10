@@ -7,10 +7,6 @@ public final class SaturatingLinearActivation extends ActivationFunction{
 		return satLin(value);
 	}
 
-	@Override
-	public double calcInverse(double value) {
-		return 1/ satLin(value);
-	}
 
 	private double satLin(double value) {
 		
@@ -21,6 +17,13 @@ public final class SaturatingLinearActivation extends ActivationFunction{
 		}else{ 
 			return value; 
 		}
+	}
+
+
+	@Override
+	public double calcPrime(double value) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }

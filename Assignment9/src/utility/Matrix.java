@@ -1,5 +1,8 @@
 package utility;
 
+
+
+
 public class Matrix {
 	
 	private final int ROW; 
@@ -13,7 +16,7 @@ public class Matrix {
 		matrix = new double[ROW][COL];
 	}
 
-	private Matrix(double[][] matrix) {
+	public Matrix(double[][] matrix) {
 		this.ROW = matrix.length;
 		this.COL = matrix[0].length;
 		this.matrix = new double[ROW][COL];
@@ -104,10 +107,10 @@ public class Matrix {
 		return true;
 	}
 	
-	public Matrix multiply(Matrix B) {
+	public Matrix dot(Matrix B) {
 		Matrix A = this;
 		Matrix C = new Matrix(A.ROW, B.COL);
-		if(A.ROW != B.COL|| A.COL != B.ROW) {
+		if( A.COL != B.ROW) {
 			throw new RuntimeException("Illegal matrix dimensions.");
 		}
 		for(int i = 0; i < C.ROW; i++) {
@@ -118,6 +121,33 @@ public class Matrix {
 			}
 		}
 		return C;
+	}
+	
+	public Matrix multiply(Matrix B) {
+		Matrix A = this;
+		if(A.ROW != B.ROW || A.COL != B.COL){
+			throw new RuntimeException("Illegal MAtrix dimensions");
+		}
+		Matrix C = new Matrix(A.ROW, A.COL);
+		for(int i = 0; i < ROW; i ++) {
+			for(int j = 0; j < COL; j++) {
+				C.matrix[i][j] = A.matrix[i][j] * B.matrix[i][j];
+			}
+		}
+		
+		return C;
+	}
+	
+	public Matrix negative() {
+		
+		Matrix B = new Matrix(ROW, COL);
+		for(int i = 0; i < ROW; i++) {
+			for(int j = 0; j < COL; j++) {
+				B.matrix[i][j] = -this.matrix[i][j];
+			}
+		}
+		
+		return B;
 	}
 	
 	public Matrix multiply(double d) {
@@ -133,7 +163,7 @@ public class Matrix {
     public void show() {
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                System.out.printf("%9.4f ", matrix[i][j]);
+                System.out.printf("%9.6f ", matrix[i][j]);
             }
             System.out.println();
         }
@@ -149,4 +179,49 @@ public class Matrix {
     	return ret;
     }
     
+    public Matrix divide(double d) {
+        Matrix ret = new Matrix(ROW, COL); 
+        for(int i = 0; i <ROW; i++) {
+            for(int j = 0; j < COL; j++) {
+                ret.matrix[i][j] = this.matrix[i][j]/d;
+            }
+        }
+        return ret;
+    }
+    
+    @Override
+    public String toString() {
+        String ret = ""; 
+        for(int i = 0; i < ROW; i++) {
+            for(int j = 0; j < COL; j++) {
+                ret += String.format("%9.6f ", this.matrix[i][j]);
+            }
+            ret += "\n";
+        }
+        return ret;
+    }
+    
+    public void normalize(double d) {
+        for(int i = 0; i < ROW; i++) {
+            for(int j = 0; j < COL; j++) {
+                
+                this.matrix[i][j] /= d; 
+            }
+        }
+    }
+    
+    public double[][] getArray() {
+    	return this.matrix;
+    }
+    
+    public double sum() {
+    	double ret = 0; 
+    	for(int i = 0; i < ROW; i++) {
+    		for(int j = 0; j < COL; j++) {
+    			ret += matrix[i][j];
+    		}
+    	}
+    	return ret;
+    }
 }
+

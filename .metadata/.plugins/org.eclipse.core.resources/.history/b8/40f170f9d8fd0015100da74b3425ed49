@@ -1,0 +1,13 @@
+import web.Crawler;
+
+public class Driver {
+	
+	
+	public static void main(String[]args) {
+		
+		String urlDogs = "http://www.dogbreedslist.info/free-dog-wallpapers/#.VwgsOHrw-CB";
+		//new MosaicGUI();
+		new Crawler().scrapeImages(urlDogs, "dogs/");
+	}
+
+}

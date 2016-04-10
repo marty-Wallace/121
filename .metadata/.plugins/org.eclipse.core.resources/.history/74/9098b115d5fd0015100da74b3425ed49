@@ -1,0 +1,13 @@
+import web.Crawler;
+
+public class Driver {
+	
+	
+	public static void main(String[]args) {
+		
+		String urlDogs = "https://www.google.ca/search?q=dogs&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjrs6XV-f_LAhVG92MKHRu7D-kQ_AUIBygB#imgrc=FRSriFAwu2FUzM%3A";
+		//new MosaicGUI();
+		new Crawler().scrapeImages(urlDogs, "dogs/");
+	}
+
+}

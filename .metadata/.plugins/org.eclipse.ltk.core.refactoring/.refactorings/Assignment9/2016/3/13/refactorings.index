@@ -1,0 +1,26 @@
+1458803699286	Copy package
+1458803705983	Delete element
+1458841056596	Rename field 'N'
+1458841071056	Rename field 'M'
+1458841122925	Rename local variable 'N'
+1458844253339	Move compilation unit
+1458844256720	Delete element
+1458866500487	Rename compilation unit 'NeuralNet.java'
+1458867329770	Rename type 'Activation'
+1458867534334	Rename type 'Tahn'
+1458868091630	Rename method 'train'
+1458872261081	Rename compilation unit 'Sigmoid.java'
+1458873088101	Move compilation unit
+1458873091408	Move compilation unit
+1458873094587	Move compilation unit
+1458873098051	Move compilation unit
+1458873100893	Move compilation unit
+1458873106153	Copy package
+1458873127512	Delete element
+1458873138426	Rename package 'functions'
+1458873174143	Move compilation units
+1458873176777	Delete element
+1458873208890	Delete element
+1458873238287	Move compilation units
+1458873242423	Move compilation units
+1458873448031	Rename local variable 'm'

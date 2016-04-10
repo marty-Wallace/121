@@ -1,0 +1,56 @@
+package fileManagement;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import image.ModifiableImage;
+import image.Tile;
+
+public class FileManager {
+	
+	
+	
+    public static ArrayList<Tile> getImagesFromTiles(File tilesDir) throws IOException{
+		ArrayList<Tile> tileImages = new ArrayList<Tile>();
+		File[] files = tilesDir.listFiles();
+		for(File file : files){
+			BufferedImage img = ImageIO.read(file);
+			if (img != null){
+			    System.out.println("Reading " + file);
+				tileImages.add(new Tile(img));
+			} else {
+				System.err.println("null image for file " + file.getName());
+			}
+		}
+		return tileImages;
+	}
+
+	
+	public static ModifiableImage loadImage(File imageFile) {
+		try{
+			BufferedImage image = ImageIO.read(imageFile);
+			if(image != null){
+				return new ModifiableImage(image);
+			}
+		}catch(IOException exc){
+			
+		}
+		return null;
+	}
+
+	public static void saveImage(BufferedImage image, File file, String IMAGE_FORMAT){		
+		try{
+			ImageIO.write(image, IMAGE_FORMAT, file);
+		}
+		catch(IOException e) {
+			return;
+		}
+	}
+
+}	
+

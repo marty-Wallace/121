@@ -57,8 +57,6 @@ public class Mosaic {
 			}
 		}
 		
-		//int width = mosaic[0].length * mosaic[0][0].image.getWidth();
-		//int height = mosaic.length * mosaic[0][0].image.getHeight();
 		int width = mosaic.length * mosaic[0][0].image.getWidth();
 		int height = mosaic[0].length * mosaic[0][0].image.getHeight();
 		newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

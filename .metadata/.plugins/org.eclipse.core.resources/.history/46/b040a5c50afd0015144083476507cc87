@@ -1,0 +1,124 @@
+package gui;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+
+public class MosaicGUI {
+	
+	private static JFileChooser fileDialog = new JFileChooser(System.getProperty("user.dir"));
+
+	private JFrame frame;
+	private BufferedImage image; 
+	private DisplayPanel panel;
+	private JLabel fileNameLabel;
+	private JButton smallerButton, largerButton;
+	
+	public MosaicGUI(){ 
+		this.frame = new JFrame();
+		frame.setSize(600, 600);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(true);
+		image = null; 
+		init();
+		frame.setVisible(true);
+	}
+	
+	
+	public void init() {
+		frame = new JFrame("Photo Mosaic");
+		JPanel contentPane = (JPanel)frame.getContentPane();
+		contentPane.setBorder(new EmptyBorder(10,10,10,10));
+		
+		createMenu();
+		contentPane.setLayout(new BorderLayout(6,6));
+		
+		panel = new DisplayPanel();
+		panel.setBorder(new EtchedBorder());
+		contentPane.add(panel, BorderLayout.CENTER);
+		
+		fileNameLabel = new JLabel(); 
+		contentPane.add(fileNameLabel, BorderLayout.SOUTH);
+		
+		JPanel toolbar = new JPanel();
+		toolbar.setLayout(new GridLayout(0,1));
+		
+	}
+	
+	public void createMenu() {
+		
+		JMenuBar menubar = new JMenuBar();
+		frame.setJMenuBar(menubar);
+		
+		JMenu menu;
+		JMenuItem item; 
+		
+		menu = new JMenu("File");
+		menubar.add(menu);
+		
+		item = new JMenuItem("Open...");
+		item.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openFile();
+			}
+		});
+		
+	
+	menu.add(item);
+	menu.addSeparator();
+	
+	item =  new JMenuItem("Save As...");
+	item.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			saveAs();
+		}
+	});
+
+	menu.add(item);
+	menu.addSeparator();
+	
+	item = new JMenuItem("Close");
+	item.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			close();
+		}
+	});
+	
+	menu.add(item);
+	menu.addSeparator();
+	
+	item = new JMenuItem("Quit");
+	item.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+	});
+	
+	menu.add(item);
+	
+	
+	}
+	
+	public void openFile(){ }
+	
+	public void saveAs(){ }
+	
+	public void close() { }
+}

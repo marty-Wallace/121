@@ -1,6 +1,6 @@
 package functions;
 
-public final class SigmoidFunction extends ActivationFunction {
+public final class SigmoidActivationFunction extends ActivationFunction {
 	
 
 	@Override
@@ -8,13 +8,11 @@ public final class SigmoidFunction extends ActivationFunction {
 		return sig(value);
 	}
 
-	@Override
-	public double calcInverse(double value) {
-		double s = sig(value);
-		return 1.0 - (s * s);
+	public double calcPrime(double value) {
+		return Math.exp(-value)/Math.pow((1 + Math.exp(-value)), 2);
 	}
 
 	private double sig(double value) {
-		return 1.0/ 1.0 + Math.exp(-value);
+		return 1.0/ (1.0 + Math.exp(-value));
 	}
 }
