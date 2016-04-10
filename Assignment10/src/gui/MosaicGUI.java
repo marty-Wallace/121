@@ -24,16 +24,22 @@ import javax.swing.border.EtchedBorder;
 import fileManagement.FileManager;
 import image.Mosaic;
 
+/**
+ * User interface for the mosaic 
+ * @author Martin
+ *
+ */
 public class MosaicGUI {
 	
-	private static JFileChooser fileDialog = new JFileChooser(System.getProperty("user.dir"));
+	private static JFileChooser fileDialog = new JFileChooser(System.getProperty("user.dir")); //file selector
 
-	private JFrame frame;
-	private BufferedImage image; 
-	private DisplayPanel panel;
-	private JLabel fileNameLabel, statusLabel;
-	private JButton mosaicButton;
-	private Mosaic mosaic;
+	private JFrame frame; 
+	private BufferedImage image;  // the actual image we are working with 
+	private DisplayPanel panel;   // Custom panel to display an image that fits to the screeen 
+	private JLabel fileNameLabel, statusLabel; // labeltown 
+	private JButton mosaicButton; // mosaic-ify button
+	private Mosaic mosaic; // Mosaic object does all the work transforming image 
+	
 	
 	public MosaicGUI(){ 
 		this.frame = new JFrame();
@@ -47,6 +53,9 @@ public class MosaicGUI {
 		this.mosaic = new Mosaic(this);
 	}
 
+	/**
+	 * Initialize JComponents set the display  panel and add the JMenu 
+	 */
 	public void init() {
 		frame = new JFrame("Photo Mosaic");
 		
@@ -68,7 +77,7 @@ public class MosaicGUI {
 		
 		statusLabel = new JLabel();
 		
-		mosaicButton = new JButton("Mosaicify");
+		mosaicButton = new JButton("Mosaic-ify");
 		mosaicButton.addActionListener(new ActionListener() {
 			@Override 
 			public void actionPerformed(ActionEvent e) {
@@ -84,6 +93,9 @@ public class MosaicGUI {
         
 	}
 	
+	/**
+	 * Created the toolbar menu with Open, Save, Close and Exit functionality. 
+	 */
 	public void createMenu() {
 		
 		JMenuBar menubar = new JMenuBar();
@@ -105,7 +117,7 @@ public class MosaicGUI {
 		
 	
 	menu.add(item);
-	menu.addSeparator();
+
 	
 	item =  new JMenuItem("Save As...");
 	item.addActionListener(new ActionListener() {
@@ -116,7 +128,7 @@ public class MosaicGUI {
 	});
 
 	menu.add(item);
-	menu.addSeparator();
+
 	
 	item = new JMenuItem("Close");
 	item.addActionListener(new ActionListener() {
@@ -142,6 +154,9 @@ public class MosaicGUI {
 	
 	}
 	
+	/**
+	 * Opens a file from the disk and loads it to the display panel 
+	 */
 	public void openFile(){
 		
 		int success = fileDialog.showOpenDialog(frame);
@@ -168,6 +183,9 @@ public class MosaicGUI {
 		
 	}
 	
+	/**
+	 * Save an image to the disk 
+	 */
 	public void saveAs(){ 
 		
 		if(image != null) {
@@ -184,6 +202,10 @@ public class MosaicGUI {
 		
 	}
 	
+	/**
+	 * Shows the name of the file on the filename label 
+	 * @param name - name of file 
+	 */
 	private void showFilename(String name) {
 		
 		if(name == null) {
@@ -193,21 +215,31 @@ public class MosaicGUI {
 		}
 	}
 	
-	
+	/**
+	 * Update the status label with new status 
+	 * @param status - new status 
+	 */
 	private void showStatus(String status) {
 		statusLabel.setText(status);
 	}
 	
+	/**
+	 * Close the current image 
+	 */
 	public void close() {
-		
 		image = null;
 		panel.clearImage();
 		showFilename(null);
 		mosaicButton.setEnabled(false);
 	}
 
+	/**
+	 * Mosaic-ifies the current loaded image 
+	 */
 	public void mosaicify() {
-		
+		if(!mosaicButton.isEnabled()){
+			return;
+		}
 		this.image = mosaic.createMosaic(this.image);
 		Dimension dim  = frame.getSize();
 		BufferedImage scaledImage = FileManager.resize(image, panel.getWidth(),panel.getHeight());
@@ -218,10 +250,18 @@ public class MosaicGUI {
 		frame.repaint();
 	}
 
+	/**
+	 * Get the frame 
+	 * @return - frame 
+	 */
 	public JFrame getFrame() {
 		return this.frame;
 	}
 	
+	/**
+	 * Enables/Disables the mosaic button 
+	 * @param b - true for enabled or false for disabled 
+	 */
 	public void enableButton(boolean b) {
 		this.mosaicButton.setEnabled(b);
 	}
