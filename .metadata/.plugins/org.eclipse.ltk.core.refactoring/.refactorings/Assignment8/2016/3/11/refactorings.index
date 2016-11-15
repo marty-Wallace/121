@@ -1,5 +1,0 @@
-1457644631232	Infer generic type arguments
-1457651164888	Rename method 'quickSort'
-1457654872010	Rename type 'Quicksorter'
-1457656580915	Rename type 'CoktailSorter'
-1457658772315	Rename local variable 'h'
